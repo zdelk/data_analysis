@@ -9,7 +9,6 @@
 ##    This script runs a query on InfluxDB, exports the
 ##     results to a CSV file, and emails the file to a
 ##     specified recipient.
-##
 ## Requirements :
 ##     - Python 3.x
 ##     - InfluxDB Python client
@@ -18,16 +17,8 @@
 ##     - Updated secrets_q_e.py (ip-address, token, sender email,
 ##                               sender email password)
 ##     - Other dependencies as required
-##
-## Usage        :
-##     python query_and_email.py
-##
-## Notes        :
-##     - Update InfluxDB credentials and recipient email in the
-##       configuration section.
-##     - Updated secrets_q_e.py (ip-address, token, sender email,
-##                               sender email password)
-##     - Ensure all necessary packages are installed.
+## To Do        :
+##     - Change csv output time to local timezone (Currently UTC)
 ##=============================================================##
 ## PACKAGE IMPORTS ##
 # Queary Packages #
@@ -48,18 +39,7 @@ from date_range import get_time_range
 # ------------Action Portion ------------------------------------#
 # Queary Portion #
 
-# Connection Parmas for Influx DB
-
-
-# print("""How much data do you want?
-#       Enter number and unit together
-#       (Units: m, h, d, w)
-#       Examples:
-#       '30m' -> 30 minutes
-#       '2h'  -> 2 hours
-#       '5d'  -> 5 days """)
-
-# Example usage
+# Time range
 duration = input("Enter the time range (e.g., '30m', '2h', '5d'): ")
 try:
     time_range = get_time_range(duration)
@@ -67,10 +47,6 @@ try:
 except ValueError as e:
     print(e)
 
-# start = input("Timeframe: ")
-# Time range for export
-# start = "-30m" # CHANGE TO USR INPUT
-# stop = "now()" # CHANGE TO USR INPUT
 
 # Initilize InfluxDB client object
 client = InfluxDBClient(url=url, token=token, org=org)
@@ -129,7 +105,7 @@ metrics = [
 data_dict = {}
 
 for table in tables:
-    for record in tables.records:
+    for record in table.records:
         time = record.get_time()  # Need to edit to do local instead of UTC
 
         value = record.get_value()
@@ -147,12 +123,12 @@ with open(filename, "w", newline="") as csvfile:
     csvwriter = csv.writer(csvfile)
 
     # Write header row
-    header = ["time"] + [metric["measurment"] for metric in metrics]
+    header = ["time"] + [metric['measurement'] for metric in metrics]
     csvwriter.writerow(header)
 
     # Write data rows
     for time, values in data_dict.items():
-        row = [time] + [values.get(metric["measurment"], None) for metric in metrics]
+        row = [time] + [values.get(metric['measurement'], None) for metric in metrics]
         csvwriter.writerow(row)
 
 # ---------------------------------------------------------------#
@@ -183,13 +159,15 @@ body = f"""This email was sent from a raspberry pi.
 # Attaching body to msg instance
 msg.attach(MIMEText(body, "plain"))
 
-attachement = open(filename, "rb")
+attachment = open(filename, "rb")
 
 p = MIMEBase("application", "octet-stream")
 
+p.set_payload((attachment).read()) 
+
 encoders.encode_base64(p)
 
-p.add_header("Content-Disposition", "attachment: filename = %s" % filename)
+p.add_header("Content-Disposition", "attachment; filename = %s" % filename)
 
 # Attaches instance 'p' to instance 'msg'
 msg.attach(p)
@@ -212,4 +190,4 @@ s.sendmail(fromaddr, toaddr, text)
 # End SMTP session
 s.quit()
 
-print(f"Data exported to {filename} and send to {fromaddr}")
+print(f"Data exported to {filename} and sent to {toaddr}")

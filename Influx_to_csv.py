@@ -3,12 +3,13 @@
 
 import csv
 from influxdb_client import InfluxDBClient
+from secrets_q_e import *
 
 # Connection Params for InfluxDB
-url = "Pi-ip-address:8086"
-token = "INFLUXDB-TOKEN"
-org = "Your-Org"
-bucket = "SensorBucket"
+# url = "Pi-ip-address:8086"
+# token = "INFLUXDB-TOKEN"
+# org = "Your-Org"
+# bucket = "SensorBucket"
 
 # Time Range for export (will add usr input)
 start = "-30m"
