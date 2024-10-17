@@ -76,7 +76,7 @@ except ValueError as e:
 client = InfluxDBClient(url=url, token=token, org=org)
 
 # Look into string formating to make this cleaner
-query = f"""from(bucket: {bucket})
+query = f"""from(bucket: "{bucket}")
   |> range(start: -{duration})
   |> filter(fn: (r) => r["_measurement"] == "airgradient_temperature_celsius"
     or r["_measurement"] == "airgradient_co2_ppm"
