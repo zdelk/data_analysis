@@ -5,9 +5,9 @@ import csv
 from influxdb_client import InfluxDBClient
 
 # Connection Params for InfluxDB
-url = ""
-token = ""
-org = "Southface"
+url = "Pi-ip-address:8086"
+token = "INFLUXDB-TOKEN"
+org = "Your-Org"
 bucket = "SensorBucket"
 
 # Time Range for export (will add usr input)
