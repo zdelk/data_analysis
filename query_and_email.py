@@ -5,7 +5,7 @@
 ## Project      : IAQ Sensor IOT w/RaspPi
 ## Created Date : 08/17/2024
 ## Update Date  : 8/25/2024
-## Version      : v0.2
+## Version      : v0.3
 ## Description  :
 ##    This script runs a query on InfluxDB, exports the
 ##     results to a CSV file, and emails the file to a
@@ -63,21 +63,26 @@ client = InfluxDBClient(url=url, token=token, org=org)
 # Look into string formating to make this cleaner
 query = f"""from(bucket: "{bucket}")
   |> range(start: -{duration})
-  |> filter(fn: (r) => r["_measurement"] == "airgradient_temperature_celsius"
-    or r["_measurement"] == "airgradient_co2_ppm"
-    or r["_measurement"] == "airgradient_humidity_compensated_percent"
-    or r["_measurement"] == "airgradient_humidity_percent"
-    or r["_measurement"] == "airgradient_nox_index"
-    or r["_measurement"] == "airgradient_nox_raw"
-    or r["_measurement"] == "airgradient_pm0d3_p100ml"
-    or r["_measurement"] == "airgradient_pm10_ugm3"
-    or r["_measurement"] == "airgradient_pm1_ugm3"
-    or r["_measurement"] == "airgradient_pm2d5_ugm3"
-    or r["_measurement"] == "airgradient_temperature_compensated_celsius"
-    or r["_measurement"] == "airgradient_tvoc_index"
-    or r["_measurement"] == "airgradient_tvoc_raw")
+  |> filter(fn: (r) => r["url"] == "{sensor_ip}")
   |> filter(fn: (r) => r["_field"] == "gauge")
-"""
+  |> filter(fn: (r) => r["_measurement"] == "airgradient_temperature_celsius"
+    or r["_measurement"] == "airgradient_temperature_compensated_celsius" 
+    or r["_measurement"] == "airgradient_humidity_compensated_percent" 
+    or r["_measurement"] == "airgradient_humidity_percent" 
+    or r["_measurement"] == "airgradient_co2_ppm"
+    or r["_measurement"] == "airgradient_nox_index" 
+    or r["_measurement"] == "airgradient_nox_raw" 
+    or r["_measurement"] == "airgradient_pm0d3_p100ml" 
+    or r["_measurement"] == "airgradient_pm10_ugm3" 
+    or r["_measurement"] == "airgradient_pm1_ugm3" 
+    or r["_measurement"] == "airgradient_pm2d5_ugm3" 
+    or r["_measurement"] == "airgradient_post_ok" 
+    or r["_measurement"] == "airgradient_temperature_celsius" 
+    or r["_measurement"] == "airgradient_temperature_compensated_celsius" 
+    or r["_measurement"] == "airgradient_tvoc_index" 
+    or r["_measurement"] == "airgradient_tvoc_raw")
+  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
+  |> yield(name: "mean")"""
 
 ## Run the query
 # Each metric generates its own table
@@ -140,9 +145,13 @@ with open(filename, "w", newline="") as csvfile:
         # Convert time to EST
         time = time.astimezone(current_timezone)
         # Add Fahrenheit Mesurement
-        values['airgradient_temperature_fahrenheit'] = round((values['airgradient_temperature_celsius'] * (9/5)) + 32, 0)
+        values['airgradient_temperature_fahrenheit'] = (values['airgradient_temperature_celsius'] * (9/5)) + 32
+        for key, value in values.items():
+            data_dict[time][key] = round(value, 2)
+        
         row = [time] + [values.get(metric['measurement'], None) for metric in metrics]
         csvwriter.writerow(row)
+
 
 #---------------------------------------------------------------#
 ## Email Section ##
