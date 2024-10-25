@@ -76,9 +76,7 @@ query = f"""from(bucket: "{bucket}")
     or r["_measurement"] == "airgradient_pm10_ugm3" 
     or r["_measurement"] == "airgradient_pm1_ugm3" 
     or r["_measurement"] == "airgradient_pm2d5_ugm3" 
-    or r["_measurement"] == "airgradient_post_ok" 
-    or r["_measurement"] == "airgradient_temperature_celsius" 
-    or r["_measurement"] == "airgradient_temperature_compensated_celsius" 
+    or r["_measurement"] == "airgradient_post_ok"  
     or r["_measurement"] == "airgradient_tvoc_index" 
     or r["_measurement"] == "airgradient_tvoc_raw")
   |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
@@ -95,22 +93,20 @@ client.close()
 
 # List of metrics (measurements and fields) to pull
 metrics = [
-    {"measurement": "airgradient_co2_ppm"},
+    {"measurement": "airgradient_temperature_fahrenheit"},
     {"measurement": "airgradient_humidity_compensated_percent"},
     {"measurement": "airgradient_humidity_percent"},
-    {"measurement": "airgradient_temperature_celsius"},
     {"measurement": "airgradient_co2_ppm"},
-    {"measurement": "airgradient_humidity_compensated_percent"},
-    {"measurement": "airgradient_humidity_percent"},
     {"measurement": "airgradient_nox_index"},
     {"measurement": "airgradient_nox_raw"},
     {"measurement": "airgradient_pm0d3_p100ml"},
     {"measurement": "airgradient_pm10_ugm3"},
     {"measurement": "airgradient_pm1_ugm3"},
     {"measurement": "airgradient_pm2d5_ugm3"},
-    {"measurement": "airgradient_temperature_compensated_celsius"},
     {"measurement": "airgradient_tvoc_index"},
     {"measurement": "airgradient_tvoc_raw"},
+    {"measurement": "airgradient_temperature_celsius"},
+    {"measurement": "airgradient_temperature_compensated_celsius"}
 ]
 
 ## Data Dictionary Creation
