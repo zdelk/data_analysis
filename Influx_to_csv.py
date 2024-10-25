@@ -16,7 +16,6 @@ start = "-30m"
 stop = "now()"
 
 
-
 # List of metrics (measurements and fields) to pull
 metrics = [
     {"measurement": "airgradient_co2_ppm"},
