@@ -4,7 +4,8 @@
 ## Company      : Southface
 ## Project      : IAQ Sensor IOT w/RaspPi
 ## Created Date : 08/17/2024
-## Version      : v0.1
+## Update Date  : 8/25/2024
+## Version      : v0.2
 ## Description  :
 ##    This script runs a query on InfluxDB, exports the
 ##     results to a CSV file, and emails the file to a
@@ -17,8 +18,13 @@
 ##     - Updated secrets_q_e.py (ip-address, token, sender email,
 ##                               sender email password)
 ##     - Other dependencies as required
+## Notes        :
+##     - Update InfluxDB credentials  in secrets_q_e.py
+##     - Updated secrets_q_e.py (ip-address, token, sender email,
+##                               sender email password)
 ## To Do        :
-##     - Change csv output time to local timezone (Currently UTC)
+##     - Be able to send to more than one person
+##     - Move or erase file on pi (Might be a bash thing)
 ##=============================================================##
 ## PACKAGE IMPORTS ##
 # Queary Packages #
@@ -33,11 +39,14 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
+# Time packages
 from date_range import get_time_range
+import pytz
+current_timezone = pytz.timezone("US/Eastern") # For changing UTC to EST
 
-# ---------------------------------------------------------------#
-# ------------Action Portion ------------------------------------#
-# Queary Portion #
+# --------------------------------------------------------------#
+# ------------Action Portion -----------------------------------#
+## Queary Section ##
 
 # Time range
 duration = input("Enter the time range (e.g., '30m', '2h', '5d'): ")
@@ -118,7 +127,7 @@ for table in tables:
         data_dict[time][measurement] = value
 
 filename = input("Name of file with extension (ie Test_File.csv): ")
-# Writing data dictionary to csv file (Add usr input for name/outputpath)
+# Writing data dictionary to csv file
 with open(filename, "w", newline="") as csvfile:
     csvwriter = csv.writer(csvfile)
 
@@ -128,15 +137,19 @@ with open(filename, "w", newline="") as csvfile:
 
     # Write data rows
     for time, values in data_dict.items():
+        # Convert time to EST
+        time = time.astimezone(current_timezone)
+        # Add Fahrenheit Mesurement
+        values['airgradient_temperature_fahrenheit'] = round((values['airgradient_temperature_celsius'] * (9/5)) + 32, 0)
         row = [time] + [values.get(metric['measurement'], None) for metric in metrics]
         csvwriter.writerow(row)
 
-# ---------------------------------------------------------------#
-## Email Section
+#---------------------------------------------------------------#
+## Email Section ##
 
 # Recipient Addresses
 toaddr = input("Enter email address to send file to: ")
-print("File will sent to ", toaddr)
+print("File will be sent to ", toaddr)
 
 # Create MIMEMultipart object
 msg = MIMEMultipart()
@@ -163,7 +176,7 @@ attachment = open(filename, "rb")
 
 p = MIMEBase("application", "octet-stream")
 
-p.set_payload((attachment).read()) 
+p.set_payload((attachment).read())
 
 encoders.encode_base64(p)
 
@@ -191,3 +204,4 @@ s.sendmail(fromaddr, toaddr, text)
 s.quit()
 
 print(f"Data exported to {filename} and sent to {toaddr}")
+
