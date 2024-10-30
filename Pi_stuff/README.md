@@ -1,5 +1,3 @@
-!!! Readme.md for Raspberry Pi and IAQ sensors
-
 # Hardware
 Pi: Raspberry Pi model 4b 1Gb with 64gb sd
  Link: https://www.microcenter.com/product/665122/raspberry-pi-4-model-b
@@ -8,7 +6,7 @@ Wifi Adapter: BrosTrend 650Mbps Linux Compatible WiFi Adapter
 IAQ Sensor: AirGradient ONE Indoor Monitor I-9PSL 9th Gen (kit)
  Link: https://www.airgradient.com/indoor/
 
-#-------#
+
 # Sensor Setup
 Build instruction Link: https://www.airgradient.com/documentation/one-v9/
 
@@ -28,23 +26,22 @@ By default, the sensor publishes data to <sensor-ip-address>:80/metrics (also to
 
 To find the Ip address of the sensor on the local(hotspot) network you can run 'arp -a'. The sensor can be found by its MAC address (its the same as the wifi connection). Use 'curl -h http://<sensor-ip-address>:80/metrics' to verify the sensor is publishing data. Once verified, add the sensor ip address to the the prometheus scape config file. 
 
-!!! 
-Note:
+
+### Note:
 At one point there was an issue where the sensor wasn't publishing data to the AirGradient API. 
 The purple light on the sensor was on as well. I'm not 100% sure why this was happening. 
 I belive it was Port confliction with the Airgradient API and Influxdb
-!!!
-#-------#
-## Raspberry Pi Setup
+
+# Raspberry Pi Setup
 Operating System: Debian GNU/Linux 12 (bookworm)
 Kernel: Linux 6.6.51+rpt-rpi-v8
 Architecture: arm64
 
-# Raspberry Pi Initialization
+## Raspberry Pi Initialization
 Used 'Raspberry Pi Imager' to flash the OS to a blank 64gb microSD card
 Made sure to enable ssh on setting.
 
-# Hotspot
+## Hotspot
 Adapter Used: "https://www.amazon.com/dp/B01GC8XH0S?ref=ppx_yo2ov_dt_b_fed_asin_title"
 
 Followed the first half of this tutorial:
@@ -83,7 +80,7 @@ Notes:
 Guide: https://pimylifeup.com/raspberry-pi-grafana/
 
 Followed the full guide. It just goes through how to get web interface running. Doesnt go into adding data.
-# Add Data Source
+### Add Data Source
  - Go to http://<Pi-Ip-address>:3000
  - On left side look for Connections -> Data Source
  - Add new data source
@@ -98,11 +95,10 @@ Followed the full guide. It just goes through how to get web interface running. 
  - Go to dashboards and it should show up
  - Should be good to go after that
  
-!!!
-Notes:
+
+### Notes:
  - LocalPage: http://localhost:3000
  - Just used for visualization
-!!!
 
 ## Influxdb (v2)
 Guide: https://pimylifeup.com/raspberry-pi-influxdb/
@@ -139,6 +135,6 @@ Notes:
  - Restart Telegraf
  
 ## Tailscale
-# Lets traffic get out of local network
+### Lets traffic get out of local network
 Install it on the pi then download the app on whatever device you are using.
 
