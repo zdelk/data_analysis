@@ -24,9 +24,9 @@ password: testpass (will probably update later)
 
 There is an option on the sensor setup to publish data to AirGradient API. I left it enabled for the time being to test
 After connecting to the internet, the sensor should start collecting data.
-By default, the sensor publishes data to </sensor-ip-address/>:80/metrics (also to </sensor-ip-address/>:80/measures/current but that one doesn't seem to work for prometheus). 
+By default, the sensor publishes data to \<sensor-ip-address\>:80/metrics (also to \<sensor-ip-address\>:80/measures/current but that one doesn't seem to work for prometheus). 
 
-To find the Ip address of the sensor on the local(hotspot) network you can run 'arp -a'. The sensor can be found by its MAC address (its the same as the wifi connection). Use 'curl -h http://</sensor-ip-address/>:80/metrics' to verify the sensor is publishing data. Once verified, add the sensor ip address to the the prometheus scape config file. 
+To find the Ip address of the sensor on the local(hotspot) network you can run 'arp -a'. The sensor can be found by its MAC address (its the same as the wifi connection). Use 'curl -h http://\<sensor-ip-address\>:80/metrics' to verify the sensor is publishing data. Once verified, add the sensor ip address to the the prometheus scape config file. 
 
 
 ### Note:
@@ -122,7 +122,7 @@ After this you have to set up Telegraf (See Telegraf then come back)
 
  - With Telegraf configured and running
  - Go to 'Data Explorer'
- - Click on your bucket. airgradient_</metrics/> should show
+ - Click on your bucket. airgradient_\<metrics\> should show
  - Click one and then click 'Submit' should see data graph
  
 That's it for the Influxdb set up. A python script is used for exporting this data.
