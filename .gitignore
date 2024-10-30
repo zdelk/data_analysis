@@ -1,3 +1,5 @@
 influxdb_export.csv
 secrets_q_e.py
 exporter_test.ipynb
+telegraf.conf
+Python_Data_Analysis.ipynb
