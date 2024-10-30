@@ -84,7 +84,7 @@ Guide: https://pimylifeup.com/raspberry-pi-grafana/
 
 Followed the full guide. It just goes through how to get web interface running. Doesnt go into adding data.
 ### Add Data Source
- - Go to http://<Pi-Ip-address>:3000
+ - Go to http://\<Pi-Ip-address\>:3000
  - On left side look for Connections -> Data Source
  - Add new data source
  - Click/Find Prometheus
@@ -137,7 +137,9 @@ Notes:
  - Update /etc/telegraf/telegraf.conf
  - Restart Telegraf
  
-## Tailscale
+## Tailscale  
+Link: https://tailscale.com/  
+
 Lets traffic get out of local network.  
 Install it on the pi then download the app on whatever device you are using.
 
