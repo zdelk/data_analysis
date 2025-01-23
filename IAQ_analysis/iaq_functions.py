@@ -47,7 +47,7 @@ def binary_threshold(data, thresholds):
 #         "Unhealthy": (60.8, 82.4)
 #     }, ... }
 
-def multiclass_thresholds(data, thresholds):
+def multiclass_threshold(data, thresholds):
     nested_list = []
     for col in data.columns:
         if col in thresholds:
