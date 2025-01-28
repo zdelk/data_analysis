@@ -117,6 +117,7 @@ category_colors = {
     "Unhealthy": "orange",
     "Dangerous": "red"
 }
+
 def pie_plotter(data, category_colors=category_colors):
     freq_table = data.iloc[:,1:].apply(lambda col: col.value_counts()).fillna(0).astype(int)
     for col in freq_table:
